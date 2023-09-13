@@ -1,67 +1,57 @@
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Alert,
+  View, Text, StyleSheet, TouchableOpacity, Alert, FlatList,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { shape, string, instanceOf, arrayOf } from 'prop-types';
 
-export default function MemoList() {
+export default function MemoList(props) {
+  const { memos } = props;
   const navigation = useNavigation();
+
+  function renderItem({ item }) {
+    return (
+      <TouchableOpacity
+        style={styles.memoListItem}
+        onPress={() => { navigation.navigate('MemoDetail'); }}
+      >
+        <View>
+          <Text style={styles.memoListItemTitle} numberOfLines={1}>{item.bodyText}</Text>
+          <Text style={styles.memoListItemDate}>{String(item.updatedAt)}</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.memoDelete}
+          onPress={() => { Alert.alert('ケシテイイノ？？'); }}
+        >
+          <Feather name="x" size={16} color="#B0B0B0" />
+        </TouchableOpacity>
+      </TouchableOpacity>
+    );
+  }
   return (
-    <View>
-      <TouchableOpacity
-        style={styles.memoListItem}
-        onPress={() => { navigation.navigate('MemoDetail'); }}
-      >
-        <View>
-          <Text style={styles.memoListItemTitle}>かいものりすと</Text>
-          <Text style={styles.memoListItemDate}>2023年 8月 29日 21:17</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.memoDelete}
-          onPress={() => { Alert.alert('ケシテイイノ？？'); }}
-        >
-          <Feather name="x" size={16} color="#B0B0B0" />
-        </TouchableOpacity>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.memoListItem}
-        onPress={() => { navigation.navigate('MemoDetail'); }}
-      >
-        <View>
-          <Text style={styles.memoListItemTitle}>かいものりすと</Text>
-          <Text style={styles.memoListItemDate}>2023年 8月 29日 21:17</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.memoDelete}
-          onPress={() => { Alert.alert('ケシテイイノ？？'); }}
-        >
-          <Feather name="x" size={16} color="#B0B0B0" />
-        </TouchableOpacity>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.memoListItem}
-        onPress={() => { navigation.navigate('MemoDetail'); }}
-      >
-        <View>
-          <Text style={styles.memoListItemTitle}>かいものりすと</Text>
-          <Text style={styles.memoListItemDate}>2023年 8月 29日 21:17</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.memoDelete}
-          onPress={() => { Alert.alert('ケシテイイノ？？'); }}
-        >
-          <Feather name="x" size={16} color="#B0B0B0" />
-        </TouchableOpacity>
-      </TouchableOpacity>
-
+    <View style={styles.container}>
+      <FlatList
+        data={memos}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 }
 
+MemoList.propTypes = {
+  memos: arrayOf(shape({
+    id: string,
+    bodyText: string,
+    updatedAt: instanceOf(Date),
+  })).isRequired,
+};
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   memoListItem: {
     backgroundColor: '#ffffff',
     flexDirection: 'row',
@@ -77,11 +67,12 @@ const styles = StyleSheet.create({
     lineHeight: 32,
   },
   memoListItemDate: {
-    fintSize: 12,
+    fintSize: 10,
     lineHeight: 16,
     color: '#848484',
   },
   memoDelete: {
-    padding: 8,
+    padding: 1,
+    paddingRight: 10,
   },
 });
