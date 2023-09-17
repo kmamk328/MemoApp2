@@ -20,11 +20,9 @@ export default function MemoCreateScreen(props) {
       bodyText,
       updatedAt: new Date(),
     })
-      .then((docRef) => {
-        console.log('Created!!', docRef.id());
+      .then(() => {
       })
       .catch((eroor) => {
-        console.log('Error', eroor);
       });
     navigation.goBack();
   }
